@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+        function timestamp() 
+        { 
+            var response = document.getElementById("g-recaptcha-response"); 
+            if (response == null || response.value.trim() == "") {
+                var elems = JSON.parse(document.getElementsByName("captcha_settings")[0].value);
+                elems["ts"] = JSON.stringify(new Date().getTime());
+                document.getElementsByName("captcha_settings")[0].value = JSON.stringify(elems); 
+            } 
+        } 
+        setInterval(timestamp, 500); 
+    </script>
+    <!-- Script which controls if user checked reCaptcha -->
+    <script>
+        let captchaChecked = false;
+
+        function captchaSuccess(){
+            captchaChecked = true;
+        }
+        
+        function beforeSubmit(event) {
+            if(!captchaChecked){
+                alert('Please check the reCAPTCHA box.');
+                event.preventDefault();
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Web Form</h1>
+    <!-- Need to change orgId -->
+    <form action="https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&orgId=00Ddt000000yveY" method="POST">
+    
+        <h4>  
+            Fill in your details below and one of our Regional Managers will call you back.
+        </h4>
+        <!-- Need to change keyname and orgId -->
+        <input type=hidden name='captcha_settings' value='{"keyname":"ST_UAT_reCaptcha_Key_Pair","fallback":"true","orgId":"00Ddt000000yveY","ts":""}'>
+        <!-- Need to change keyname and oid -->
+        <input type=hidden name="oid" value="00Ddt000000yveY">
+        <!-- Need to set URL for ThankYou Page-->
+        <input type=hidden name="retURL" value="https://stepantitvikt.github.io/WebToLeadUAT/pagethankyou.html">
+        
+        <input type=hidden name="lead_source" id="lead_source" value="Website" type="text">
+
+        <label for="first_name">First Name *</label><input required id="first_name" name="first_name" size="20" type="text" />
+        
+        <label for="last_name">Last Name *</label><input  required id="last_name" name="last_name" size="20" type="text" />
+        
+        <label for="email">Email *</label><input required id="email" name="email" size="20" type="email" />
+        
+        <label for="mobile">Mobile</label><input id="mobile" name="mobile" size="20" type="tel" />
+
+        <label for="Region_from_Web__c">Region *</label>
+        <select required id="Region_from_Web__c" name="Region_from_Web__c">
+                <option value="Eastern Cape"> Eastern Cape </option>
+                <option value="Free State & Northern Cape"> Free State & Northern Cape </option>
+                <option value="Greater Pretoria"> Greater Pretoria </option>
+                <option value="Johannesburg North & West"> Johannesburg North & West </option>
+                <option value="Johannesburg South & East"> Johannesburg South & East </option>
+                <option value="KwaZulu Natal"> KwaZulu Natal </option>
+                <option value="Western Cape"> Western Cape </option>
+        </select>
+        
+		<label for="Comments__c">Comments:</label>
+        <textarea  id="Comments__c" name="Comments__c" rows="3" type="text" wrap="soft"></textarea><br>
+
+        <!-- Need to change data-callback-->
+        <div class="g-recaptcha" data-callback="captchaSuccess" data-sitekey="6LcZb1QrAAAAANd78IHRu4fyvxP0kydzkqKKgpS2"></div><br>
+
+        <button type="submit" name="submit">Send</button>
+    
+    </form>
+    
+</body>
+</html>
